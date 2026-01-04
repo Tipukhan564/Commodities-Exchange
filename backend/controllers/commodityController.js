@@ -1,4 +1,4 @@
-const CommodityModel = require('../models/CommodityModel');
+const CommodityModel = require('../models/CommodityMySQL');
 
 class CommodityController {
   static async getAllCommodities(req, res) {

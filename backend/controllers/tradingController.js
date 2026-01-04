@@ -1,8 +1,8 @@
-const Order = require('../models/Order');
-const Portfolio = require('../models/Portfolio');
-const User = require('../models/User');
-const Transaction = require('../models/Transaction');
-const CommodityModel = require('../models/CommodityModel');
+const Order = require('../models/OrderMySQL');
+const Portfolio = require('../models/PortfolioMySQL');
+const User = require('../models/UserMySQL');
+const Transaction = require('../models/TransactionMySQL');
+const CommodityModel = require('../models/CommodityMySQL');
 
 class TradingController {
   static async placeBuyOrder(req, res) {

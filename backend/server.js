@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-// Initialize database
-require('./config/database');
+// Initialize MySQL database
+require('./config/mysqlDatabase');
 
 const app = express();
 

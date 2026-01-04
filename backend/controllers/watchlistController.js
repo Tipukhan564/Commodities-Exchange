@@ -1,4 +1,4 @@
-const Watchlist = require('../models/Watchlist');
+const Watchlist = require('../models/WatchlistMySQL');
 
 class WatchlistController {
   static async getWatchlist(req, res) {
