@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const Order = require('../models/Order');
-const Transaction = require('../models/Transaction');
-const CommodityModel = require('../models/CommodityModel');
+const User = require('../models/UserMySQL');
+const Order = require('../models/OrderMySQL');
+const Transaction = require('../models/TransactionMySQL');
+const CommodityModel = require('../models/CommodityMySQL');
 
 class AdminController {
   static async getAllUsers(req, res) {

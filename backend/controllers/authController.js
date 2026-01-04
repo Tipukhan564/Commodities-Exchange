@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const Transaction = require('../models/Transaction');
+const User = require('../models/UserMySQL');
+const Transaction = require('../models/TransactionMySQL');
 const { generateToken } = require('../middleware/auth');
 const { validationResult } = require('express-validator');
 

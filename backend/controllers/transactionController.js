@@ -1,5 +1,5 @@
-const Transaction = require('../models/Transaction');
-const User = require('../models/User');
+const Transaction = require('../models/TransactionMySQL');
+const User = require('../models/UserMySQL');
 
 class TransactionController {
   static async getTransactions(req, res) {
