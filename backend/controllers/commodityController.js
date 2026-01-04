@@ -1,61 +1,80 @@
-const yf = require('yahoo-finance2').default;
-const Commodity = require('../models/Commodity');
-const { calculateRSI, calculateMACD, calculateBollinger } = require('../utils/indicators');
+const CommodityModel = require('../models/CommodityModel');
 
-exports.fetchOilData = async () => {
-  try {
-    const result = await yf.chart('CL=F', {
-      period1: new Date('2020-01-01'),
-      period2: new Date('2024-12-31'),
-      interval: '1d'
-    });
-
-    if (!result || !result.quotes || result.quotes.length === 0) {
-      console.error("⚠️ No quote data returned.");
-      return;
+class CommodityController {
+  static async getAllCommodities(req, res) {
+    try {
+      const commodities = CommodityModel.getAll();
+      res.json(commodities);
+    } catch (err) {
+      console.error('Fetch commodities error:', err);
+      res.status(500).json({ error: 'Server error fetching commodities' });
     }
-
-    for (const quote of result.quotes) {
-      const price = quote.adjclose;
-      const date = new Date(quote.date);
-      if (price == null) continue;
-
-      const signal = price > 70 ? 'Sell' : price < 30 ? 'Buy' : 'Hold';
-
-      await Commodity.create({ name: 'Crude Oil', date, price, signal });
-    }
-
-    console.log("✅ Data inserted successfully");
-  } catch (err) {
-    console.error("❌ Error fetching oil data:", err.message);
   }
-};
 
-exports.updateIndicators = async () => {
-  try {
-    const commodities = await Commodity.find().sort({ date: 1 });
-    console.log(`📊 Found ${commodities.length} entries.`);
+  static async getCommodityBySymbol(req, res) {
+    try {
+      const { symbol } = req.params;
+      const commodity = CommodityModel.getBySymbol(symbol);
 
-    const prices = commodities.map(c => c.price);
-    const rsi = calculateRSI(prices);
-    const macd = calculateMACD(prices);
-    const boll = calculateBollinger(prices);
+      if (!commodity) {
+        return res.status(404).json({ error: 'Commodity not found' });
+      }
 
-    for (let i = 0; i < commodities.length; i++) {
-      let signal = 'Hold';
-      if (rsi[i] > 70) signal = 'Sell';
-      else if (rsi[i] < 30) signal = 'Buy';
+      res.json(commodity);
+    } catch (err) {
+      console.error('Fetch commodity error:', err);
+      res.status(500).json({ error: 'Server error fetching commodity' });
+    }
+  }
 
-      await Commodity.findByIdAndUpdate(commodities[i]._id, {
-        rsi: rsi[i],
-        macd: macd[i],
-        bollingerBand: boll[i],
-        signal
+  static async updateCommodityPrice(req, res) {
+    try {
+      const { symbol } = req.params;
+      const priceData = req.body;
+
+      const commodity = CommodityModel.getBySymbol(symbol);
+      if (!commodity) {
+        return res.status(404).json({ error: 'Commodity not found' });
+      }
+
+      CommodityModel.updatePrice(symbol, priceData);
+
+      res.json({
+        message: 'Commodity price updated successfully',
+        commodity: CommodityModel.getBySymbol(symbol)
       });
+    } catch (err) {
+      console.error('Update price error:', err);
+      res.status(500).json({ error: 'Server error updating price' });
     }
-
-    console.log("✅ Indicators updated for all records");
-  } catch (error) {
-    console.error('❌ Error in updateIndicators:', error.message);
   }
-};
+
+  static async createCommodity(req, res) {
+    try {
+      const commodityData = req.body;
+      const id = CommodityModel.create(commodityData);
+
+      res.status(201).json({
+        message: 'Commodity created successfully',
+        id
+      });
+    } catch (err) {
+      console.error('Create commodity error:', err);
+      res.status(500).json({ error: 'Server error creating commodity' });
+    }
+  }
+
+  static async deleteCommodity(req, res) {
+    try {
+      const { symbol } = req.params;
+      CommodityModel.delete(symbol);
+
+      res.json({ message: 'Commodity deleted successfully' });
+    } catch (err) {
+      console.error('Delete commodity error:', err);
+      res.status(500).json({ error: 'Server error deleting commodity' });
+    }
+  }
+}
+
+module.exports = CommodityController;
