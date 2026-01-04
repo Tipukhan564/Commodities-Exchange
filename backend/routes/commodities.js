@@ -1,23 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const Commodity = require('../models/Commodity');
+const CommodityController = require('../controllers/commodityController');
+const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 
 // Test endpoint
 router.get('/test', (req, res) => {
   res.json({ message: '✅ Backend is connected!', timestamp: new Date() });
 });
 
-// GET /api/commodities
-router.get('/commodities', async (req, res) => {
-  try {
-    console.log('📡 GET /api/commodities request received');
-    const data = await Commodity.find().sort({ date: 1 });
-    console.log(`✅ Found ${data.length} commodities`);
-    res.json(data);
-  } catch (err) {
-    console.error('❌ Error fetching data:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+// Get all commodities (public)
+router.get('/', CommodityController.getAllCommodities);
+
+// Get commodity by symbol (public)
+router.get('/:symbol', CommodityController.getCommodityBySymbol);
+
+// Update commodity price (admin only)
+router.put('/:symbol', authMiddleware, adminMiddleware, CommodityController.updateCommodityPrice);
+
+// Create commodity (admin only)
+router.post('/', authMiddleware, adminMiddleware, CommodityController.createCommodity);
+
+// Delete commodity (admin only)
+router.delete('/:symbol', authMiddleware, adminMiddleware, CommodityController.deleteCommodity);
 
 module.exports = router;
