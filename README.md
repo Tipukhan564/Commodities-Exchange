@@ -1,6 +1,6 @@
 # Commodities Exchange Platform
 
-A comprehensive full-stack commodities trading exchange built with React, Node.js, Express, and SQLite.
+A comprehensive full-stack commodities trading exchange with a futuristic cyberpunk UI, built with React, Node.js, Express, and SQLite/MySQL.
 
 ## Features
 
@@ -51,12 +51,20 @@ A comprehensive full-stack commodities trading exchange built with React, Node.j
 - **bcryptjs** for password hashing
 - RESTful API architecture
 
-### Frontend
+### Frontend (Original)
 - **React** 19.1
 - **React Router** for navigation
 - **Axios** for API calls
 - **Tailwind CSS** for styling
 - Context API for state management
+
+### Mobile App (NEW - Futuristic UI)
+- **React** 18.2 with React Router
+- **Framer Motion** for smooth animations
+- **Tailwind CSS** with custom cyberpunk theme
+- **Recharts** for interactive charts
+- Glassmorphism and neon effects
+- Mobile-first responsive design
 
 ## Installation & Setup
 
@@ -106,6 +114,37 @@ npm start
 ```
 
 The frontend will run on `http://localhost:3000`
+
+### Mobile App Setup (NEW - Cyberpunk UI)
+
+1. Navigate to mobile-app directory:
+```bash
+cd mobile-app
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm start
+```
+
+The mobile app will run on `http://localhost:3000` (use a different port if frontend is already running)
+
+**Features:**
+- 🎨 Stunning cyberpunk/Binance-inspired design
+- ✨ Glassmorphism effects and neon glows
+- 📊 Interactive charts with multiple timeframes
+- 💼 Advanced portfolio management with P&L tracking
+- 📈 Real-time trading interface
+- 📜 Order history with filtering
+- 🔐 Secure JWT authentication
+- 📱 Fully responsive mobile-first design
+
+See `mobile-app/README.md` for detailed documentation.
 
 ## Database Schema
 
