@@ -26,10 +26,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.commodityx.data.Commodity
+import com.commodityx.ui.alerts.AlertsActivity
 import com.commodityx.ui.charts.ChartsActivity
 import com.commodityx.ui.orders.OrdersActivity
 import com.commodityx.ui.portfolio.PortfolioActivity
+import com.commodityx.ui.profile.ProfileActivity
 import com.commodityx.ui.trading.TradingActivity
+import com.commodityx.ui.transactions.TransactionsActivity
+import com.commodityx.ui.watchlist.WatchlistActivity
 import com.commodityx.ui.theme.*
 import com.commodityx.viewmodel.DashboardViewModel
 import java.text.NumberFormat
@@ -68,6 +72,18 @@ class DashboardActivity : ComponentActivity() {
                     onNavigateToOrders = {
                         startActivity(Intent(this, OrdersActivity::class.java))
                     },
+                    onNavigateToWatchlist = {
+                        startActivity(Intent(this, WatchlistActivity::class.java))
+                    },
+                    onNavigateToAlerts = {
+                        startActivity(Intent(this, AlertsActivity::class.java))
+                    },
+                    onNavigateToTransactions = {
+                        startActivity(Intent(this, TransactionsActivity::class.java))
+                    },
+                    onNavigateToProfile = {
+                        startActivity(Intent(this, ProfileActivity::class.java))
+                    },
                     onRefresh = { viewModel.loadDashboardData() }
                 )
             }
@@ -83,6 +99,10 @@ fun DashboardScreen(
     onNavigateToCharts: (Commodity) -> Unit,
     onNavigateToTrading: (Commodity) -> Unit,
     onNavigateToOrders: () -> Unit,
+    onNavigateToWatchlist: () -> Unit,
+    onNavigateToAlerts: () -> Unit,
+    onNavigateToTransactions: () -> Unit,
+    onNavigateToProfile: () -> Unit,
     onRefresh: () -> Unit
 ) {
     val currencyFormatter = remember {
@@ -97,7 +117,9 @@ fun DashboardScreen(
             BottomNavigationBar(
                 selectedIndex = 0,
                 onNavigateToPortfolio = onNavigateToPortfolio,
-                onNavigateToOrders = onNavigateToOrders
+                onNavigateToCharts = { onNavigateToCharts(state.commodities.firstOrNull() ?: return@BottomNavigationBar) },
+                onNavigateToOrders = onNavigateToOrders,
+                onNavigateToProfile = onNavigateToProfile
             )
         }
     ) { paddingValues ->
@@ -137,7 +159,11 @@ fun DashboardScreen(
                     item {
                         DashboardHeader(
                             username = state.user?.username ?: "User",
-                            onRefresh = onRefresh
+                            onRefresh = onRefresh,
+                            onNavigateToProfile = onNavigateToProfile,
+                            onNavigateToWatchlist = onNavigateToWatchlist,
+                            onNavigateToAlerts = onNavigateToAlerts,
+                            onNavigateToTransactions = onNavigateToTransactions
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -207,14 +233,24 @@ fun DashboardScreen(
 @Composable
 fun DashboardHeader(
     username: String,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onNavigateToProfile: () -> Unit,
+    onNavigateToWatchlist: () -> Unit,
+    onNavigateToAlerts: () -> Unit,
+    onNavigateToTransactions: () -> Unit
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable { onNavigateToProfile() }
+        ) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -251,17 +287,71 @@ fun DashboardHeader(
             }
         }
 
-        IconButton(
-            onClick = onRefresh,
-            modifier = Modifier
-                .size(40.dp)
-                .background(SurfaceDark, CircleShape)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "Refresh",
-                tint = Color.White
-            )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            IconButton(
+                onClick = onRefresh,
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(SurfaceDark, CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Refresh",
+                    tint = Color.White
+                )
+            }
+
+            Box {
+                IconButton(
+                    onClick = { showMenu = true },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(SurfaceDark, CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        tint = Color.White
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                    modifier = Modifier.background(SurfaceDark)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Watchlist", color = Color.White) },
+                        onClick = {
+                            showMenu = false
+                            onNavigateToWatchlist()
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Star, contentDescription = null, tint = NeonCyan)
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Price Alerts", color = Color.White) },
+                        onClick = {
+                            showMenu = false
+                            onNavigateToAlerts()
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Notifications, contentDescription = null, tint = NeonPurple)
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Transactions", color = Color.White) },
+                        onClick = {
+                            showMenu = false
+                            onNavigateToTransactions()
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Receipt, contentDescription = null, tint = NeonGreen)
+                        }
+                    )
+                }
+            }
         }
     }
 }
@@ -538,7 +628,9 @@ fun PriceChangeBadge(change: Double) {
 fun BottomNavigationBar(
     selectedIndex: Int,
     onNavigateToPortfolio: () -> Unit,
-    onNavigateToOrders: () -> Unit
+    onNavigateToCharts: () -> Unit,
+    onNavigateToOrders: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     NavigationBar(
         containerColor = SurfaceDark.copy(alpha = 0.95f),
@@ -571,10 +663,23 @@ fun BottomNavigationBar(
             )
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.Receipt, contentDescription = "Orders") },
-            label = { Text("Orders") },
+            icon = { Icon(Icons.Default.ShowChart, contentDescription = "Charts") },
+            label = { Text("Charts") },
             selected = selectedIndex == 2,
-            onClick = onNavigateToOrders,
+            onClick = onNavigateToCharts,
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = NeonCyan,
+                selectedTextColor = NeonCyan,
+                indicatorColor = NeonCyan.copy(alpha = 0.2f),
+                unselectedIconColor = Gray400,
+                unselectedTextColor = Gray400
+            )
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+            label = { Text("Profile") },
+            selected = selectedIndex == 3,
+            onClick = onNavigateToProfile,
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = NeonCyan,
                 selectedTextColor = NeonCyan,

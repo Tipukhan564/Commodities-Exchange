@@ -68,6 +68,30 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- Watchlist Activity -->
+        <activity
+            android:name=".ui.watchlist.WatchlistActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Alerts Activity -->
+        <activity
+            android:name=".ui.alerts.AlertsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Profile Activity -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Transactions Activity -->
+        <activity
+            android:name=".ui.transactions.TransactionsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

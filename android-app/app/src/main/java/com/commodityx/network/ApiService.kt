@@ -24,7 +24,10 @@ interface ApiService {
     suspend fun getCommodity(@Path("id") id: Int): ApiResponse<Commodity>
 
     @GET("commodities/{id}/history")
-    suspend fun getPriceHistory(@Path("id") id: Int): PriceHistoryResponse
+    suspend fun getPriceHistory(
+        @Path("id") id: Int,
+        @Query("timeframe") timeframe: String = "1D"
+    ): PriceHistoryResponse
 
     // Trading
     @POST("trading/order")
@@ -38,4 +41,28 @@ interface ApiService {
 
     @GET("trading/portfolio")
     suspend fun getPortfolio(): PortfolioResponse
+
+    // Watchlist
+    @GET("watchlist")
+    suspend fun getWatchlist(): WatchlistResponse
+
+    @POST("watchlist")
+    suspend fun addToWatchlist(@Body request: AddToWatchlistRequest): ApiResponse<Any>
+
+    @DELETE("watchlist/{commodityId}")
+    suspend fun removeFromWatchlist(@Path("commodityId") commodityId: Int): ApiResponse<Any>
+
+    // Alerts
+    @GET("alerts")
+    suspend fun getAlerts(): AlertsResponse
+
+    @POST("alerts")
+    suspend fun createAlert(@Body request: CreateAlertRequest): AlertResponse
+
+    @DELETE("alerts/{id}")
+    suspend fun deleteAlert(@Path("id") id: Int): ApiResponse<Any>
+
+    // Transactions
+    @GET("transactions")
+    suspend fun getTransactions(): TransactionsResponse
 }

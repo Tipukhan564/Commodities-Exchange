@@ -59,7 +59,7 @@ data class Order(
 
 @Parcelize
 data class PriceHistory(
-    val timestamp: String,
+    val timestamp: Long,
     val price: Double
 ) : Parcelable
 
@@ -163,3 +163,82 @@ enum class Timeframe(val label: String) {
     THREE_MONTHS("3M"),
     ONE_YEAR("1Y")
 }
+
+data class WatchlistState(
+    val isLoading: Boolean = true,
+    val watchlist: List<Commodity> = emptyList(),
+    val error: String? = null
+)
+
+data class WatchlistResponse(
+    val watchlist: List<Commodity>
+)
+
+data class AddToWatchlistRequest(
+    val commodity_id: Int
+)
+
+// Price Alerts
+@Parcelize
+data class PriceAlert(
+    val id: Int,
+    val commodity_id: Int,
+    val commodity_name: String?,
+    val commodity_symbol: String?,
+    val target_price: Double,
+    val condition: String, // "above" or "below"
+    val is_active: Boolean,
+    val created_at: String
+) : Parcelable
+
+data class AlertsState(
+    val isLoading: Boolean = true,
+    val alerts: List<PriceAlert> = emptyList(),
+    val error: String? = null
+)
+
+data class AlertsResponse(
+    val alerts: List<PriceAlert>
+)
+
+data class CreateAlertRequest(
+    val commodity_id: Int,
+    val target_price: Double,
+    val condition: String
+)
+
+data class AlertResponse(
+    val alert: PriceAlert
+)
+
+// Profile & Settings
+data class ProfileState(
+    val isLoading: Boolean = true,
+    val user: User? = null,
+    val error: String? = null
+)
+
+// Transactions
+@Parcelize
+data class Transaction(
+    val id: Int,
+    val transaction_type: String, // "deposit", "withdrawal", "buy", "sell"
+    val amount: Double,
+    val description: String?,
+    val created_at: String
+) : Parcelable
+
+data class TransactionsState(
+    val isLoading: Boolean = true,
+    val transactions: List<Transaction> = emptyList(),
+    val filter: TransactionFilter = TransactionFilter.ALL,
+    val error: String? = null
+)
+
+enum class TransactionFilter {
+    ALL, DEPOSIT, WITHDRAWAL, BUY, SELL
+}
+
+data class TransactionsResponse(
+    val transactions: List<Transaction>
+)
