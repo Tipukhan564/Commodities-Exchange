@@ -1,34 +1,29 @@
-# Commodities Exchange Platform
+# Commodities Exchange - Native Android App
 
-A comprehensive full-stack commodities trading exchange with a futuristic cyberpunk UI, built with React, Node.js, Express, and SQLite/MySQL.
+A comprehensive native Android commodities trading application with a futuristic cyberpunk UI, built with **Kotlin**, **Jetpack Compose**, **Node.js**, **Express**, and **MySQL**.
 
-## Features
+## 🚀 Features
 
 ### Authentication & Security
 - User registration and login with JWT authentication
 - Secure password hashing with bcrypt
-- Protected routes and admin access control
-- Session management with automatic token refresh
+- Protected routes and automatic token refresh
+- Session management with encrypted local storage
 
 ### Trading Features
-- **Real-time Market Data**: View live commodity prices with price changes
+- **Real-time Market Data**: View live commodity prices with 24h changes
+- **Interactive Charts**: Price charts with multiple timeframes (1H, 1D, 1W, 1M, 3M, 1Y)
 - **Buy/Sell Orders**: Place market orders instantly
-- **Portfolio Management**: Track your holdings with profit/loss calculations
-- **Order History**: View complete trading history
-- **Watchlist**: Add commodities to watchlist for quick access
-- **Price Alerts**: Set price alerts for commodities (above/below target price)
+- **Portfolio Management**: Track holdings with real-time P&L calculations
+- **Order History**: View complete trading history with filters
+- **Watchlist**: Add commodities to favorites for quick access
+- **Price Alerts**: Set price alerts with above/below conditions
 
 ### Wallet Management
-- Deposit funds to your trading account
-- Withdraw funds from your account
-- Real-time balance updates
-- Transaction history tracking
-
-### Admin Panel
-- User management (view, delete users)
-- Platform statistics dashboard
-- Order monitoring
-- Trading volume analytics
+- View account balance in real-time
+- Transaction history with filtering
+- Deposit/withdrawal tracking
+- Balance updates after each trade
 
 ### Available Commodities
 - Gold (GC=F)
@@ -42,254 +37,301 @@ A comprehensive full-stack commodities trading exchange with a futuristic cyberp
 - Wheat (ZW=F)
 - Coffee (KC=F)
 
-## Technology Stack
+## 📱 Android App Screens
+
+1. **Dashboard** - Live markets with quick buy/sell actions
+2. **Portfolio** - Holdings with P&L tracking and stats
+3. **Charts** - Interactive price charts with timeframe selection
+4. **Orders** - Order history with status filters
+5. **Watchlist** - Favorite commodities management
+6. **Price Alerts** - Create and manage price alerts
+7. **Profile** - User account and settings
+8. **Transactions** - Complete transaction history
+
+## 🛠 Technology Stack
+
+### Android App
+- **Kotlin** - Modern programming language
+- **Jetpack Compose** - Declarative UI framework
+- **Material Design 3** - Latest Android design system
+- **MVVM Architecture** - Clean separation of concerns
+- **Retrofit** - Type-safe HTTP client
+- **Coroutines & Flow** - Asynchronous programming
+- **StateFlow** - Reactive state management
+- **Navigation** - Bottom navigation + menu system
 
 ### Backend
 - **Node.js** with Express.js
-- **SQLite** database (better-sqlite3)
+- **MySQL** database
 - **JWT** for authentication
 - **bcryptjs** for password hashing
 - RESTful API architecture
 
-### Frontend (Original)
-- **React** 19.1
-- **React Router** for navigation
-- **Axios** for API calls
-- **Tailwind CSS** for styling
-- Context API for state management
+### Design
+- **Cyberpunk Theme** - Neon cyan, green, purple colors
+- **Glassmorphism** - Semi-transparent cards with blur
+- **Gradient Effects** - Profit/loss indicators
+- **Animations** - Smooth color transitions
+- **Custom Charts** - Canvas-based price visualization
 
-### Mobile App (NEW - Futuristic UI)
-- **React** 18.2 with React Router
-- **Framer Motion** for smooth animations
-- **Tailwind CSS** with custom cyberpunk theme
-- **Recharts** for interactive charts
-- Glassmorphism and neon effects
-- Mobile-first responsive design
-
-## Installation & Setup
+## 📦 Installation & Setup
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+- **Android Studio** (Arctic Fox or newer)
+- **JDK 11+**
+- **Android SDK 34**
+- **Node.js** (v14 or higher)
+- **MySQL** (8.0 or higher)
 
-### Backend Setup
+### 1. Backend Setup
 
-1. Navigate to backend directory:
 ```bash
+# Navigate to backend directory
 cd backend
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Initialize the database:
-```bash
-node config/initDatabase.js
-```
+# Set up MySQL database
+# See MYSQL_SETUP.md for detailed instructions
+mysql -u root -p < ../database/mysql_schema.sql
 
-4. Start the backend server:
-```bash
+# Start the backend server
 npm start
 ```
 
 The backend server will run on `http://localhost:5000`
 
-### Frontend Setup
+### 2. Android App Setup
 
-1. Navigate to frontend directory:
+#### Option A: Using Android Studio (Recommended)
+
+1. **Open Android Studio**
+   - File → Open → Select `android-app/` directory
+
+2. **Sync Gradle**
+   - Wait for Gradle sync to complete
+   - Click "Sync Now" if prompted
+
+3. **Configure API URL**
+   - Open `android-app/app/build.gradle`
+   - For **Emulator**: Use `http://10.0.2.2:5000/api/`
+   - For **Physical Device**: Change to your computer's IP
+   ```gradle
+   buildConfigField "String", "API_BASE_URL", "\"http://YOUR_IP:5000/api/\""
+   ```
+
+4. **Run the App**
+   - Click the green Run button (▶️)
+   - Or press `Shift + F10`
+   - Select emulator or connected device
+
+#### Option B: Using Command Line
+
 ```bash
-cd frontend
+# Navigate to android app directory
+cd android-app
+
+# Build the APK
+./gradlew assembleDebug
+
+# Install on connected device/emulator
+./gradlew installDebug
+
+# Launch the app
+adb shell am start -n com.commodityx/.ui.MainActivity
 ```
 
-2. Install dependencies:
+### 3. Database Setup
+
+See detailed instructions in:
+- `MYSQL_SETUP.md` - Complete MySQL setup guide
+- `MYSQL_PASSWORD_SETUP.md` - Password configuration
+
+Quick setup:
 ```bash
-npm install
+# Import database schema
+mysql -u root -p commodities_exchange < database/mysql_schema.sql
+
+# Update backend config with your MySQL credentials
+# Edit backend/.env or backend/config/database.js
 ```
 
-3. Start the development server:
-```bash
-npm start
-```
+## 🎨 UI/UX Design
 
-The frontend will run on `http://localhost:3000`
+### Color Palette
+- **Neon Cyan**: `#0DCCF2` - Primary actions
+- **Neon Green**: `#00FFA3` - Profits, success
+- **Neon Purple**: `#8C25F4` - Alerts, highlights
+- **Neon Red**: `#FF3B3B` - Losses, warnings
+- **Cyber Dark**: `#0A0E17` - Background
+- **Surface Dark**: `#16292D` - Cards, surfaces
 
-### Mobile App Setup (NEW - Cyberpunk UI)
+### Design Patterns
+- **Bottom Navigation**: Dashboard, Portfolio, Charts, Profile
+- **Header Menu**: Watchlist, Alerts, Transactions
+- **Glassmorphism Cards**: Semi-transparent with backdrop blur
+- **Gradient Borders**: Indicating profit (green) or loss (red)
+- **Glow Effects**: Radial gradients for emphasis
+- **Smooth Animations**: Color transitions and loading states
 
-1. Navigate to mobile-app directory:
-```bash
-cd mobile-app
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm start
-```
-
-The mobile app will run on `http://localhost:3000` (use a different port if frontend is already running)
-
-**Features:**
-- 🎨 Stunning cyberpunk/Binance-inspired design
-- ✨ Glassmorphism effects and neon glows
-- 📊 Interactive charts with multiple timeframes
-- 💼 Advanced portfolio management with P&L tracking
-- 📈 Real-time trading interface
-- 📜 Order history with filtering
-- 🔐 Secure JWT authentication
-- 📱 Fully responsive mobile-first design
-
-See `mobile-app/README.md` for detailed documentation.
-
-## Database Schema
-
-### Users Table
-- id, username, email, password (hashed)
-- balance, is_admin
-- created_at, updated_at
-
-### Commodities Table
-- id, symbol, name
-- current_price, previous_close, open_price
-- high_price, low_price, volume
-- market_cap, change_percent
-
-### Orders Table
-- id, user_id, commodity_symbol
-- order_type (BUY/SELL)
-- quantity, price, total_amount
-- status, created_at
-
-### Portfolio Table
-- id, user_id, commodity_symbol
-- quantity, average_price, total_invested
-
-### Watchlist Table
-- id, user_id, commodity_symbol, added_at
-
-### Price Alerts Table
-- id, user_id, commodity_symbol
-- alert_type (ABOVE/BELOW), target_price
-- is_active, triggered_at
-
-### Transactions Table
-- id, user_id, transaction_type
-- amount, description, created_at
-
-## API Endpoints
+## 📡 API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
-- `GET /api/auth/profile` - Get user profile (protected)
-- `PUT /api/auth/profile` - Update user profile (protected)
+- `GET /api/auth/profile` - Get user profile
 
 ### Commodities
 - `GET /api/commodities` - Get all commodities
-- `GET /api/commodities/:symbol` - Get commodity by symbol
-- `POST /api/commodities` - Create commodity (admin)
-- `PUT /api/commodities/:symbol` - Update commodity price (admin)
-- `DELETE /api/commodities/:symbol` - Delete commodity (admin)
+- `GET /api/commodities/{id}` - Get commodity by ID
+- `GET /api/commodities/{id}/history` - Get price history
 
 ### Trading
-- `POST /api/trading/buy` - Place buy order (protected)
-- `POST /api/trading/sell` - Place sell order (protected)
-- `GET /api/trading/orders` - Get user orders (protected)
-- `GET /api/trading/portfolio` - Get user portfolio (protected)
+- `POST /api/trading/order` - Place buy/sell order
+- `GET /api/trading/orders` - Get user orders
+- `DELETE /api/trading/orders/{id}` - Cancel order
+- `GET /api/trading/portfolio` - Get user portfolio
 
 ### Watchlist
-- `GET /api/watchlist` - Get user watchlist (protected)
-- `POST /api/watchlist` - Add to watchlist (protected)
-- `DELETE /api/watchlist/:symbol` - Remove from watchlist (protected)
+- `GET /api/watchlist` - Get user watchlist
+- `POST /api/watchlist` - Add to watchlist
+- `DELETE /api/watchlist/{commodityId}` - Remove from watchlist
 
 ### Alerts
-- `GET /api/alerts` - Get user alerts (protected)
-- `POST /api/alerts` - Create alert (protected)
-- `DELETE /api/alerts/:id` - Delete alert (protected)
+- `GET /api/alerts` - Get user alerts
+- `POST /api/alerts` - Create price alert
+- `DELETE /api/alerts/{id}` - Delete alert
 
 ### Transactions
-- `GET /api/transactions` - Get user transactions (protected)
-- `POST /api/transactions/deposit` - Deposit funds (protected)
-- `POST /api/transactions/withdraw` - Withdraw funds (protected)
+- `GET /api/transactions` - Get user transaction history
 
-### Admin
-- `GET /api/admin/users` - Get all users (admin)
-- `GET /api/admin/users/:id` - Get user details (admin)
-- `DELETE /api/admin/users/:id` - Delete user (admin)
-- `GET /api/admin/orders` - Get all orders (admin)
-- `GET /api/admin/stats` - Get platform statistics (admin)
+## 🏗 Project Structure
 
-## Default User
-
-New users start with:
-- **Balance**: $100,000
-- **Initial deposit transaction** recorded
-
-To create an admin user, manually update the `is_admin` field in the database:
-```sql
-UPDATE users SET is_admin = 1 WHERE username = 'your_username';
+```
+Commodities-Exchange/
+├── android-app/                 # Native Android application
+│   ├── app/
+│   │   ├── src/main/
+│   │   │   ├── java/com/commodityx/
+│   │   │   │   ├── data/        # Data models
+│   │   │   │   ├── network/     # API service & Retrofit
+│   │   │   │   ├── ui/          # Compose UI screens
+│   │   │   │   │   ├── alerts/
+│   │   │   │   │   ├── auth/
+│   │   │   │   │   ├── charts/
+│   │   │   │   │   ├── dashboard/
+│   │   │   │   │   ├── orders/
+│   │   │   │   │   ├── portfolio/
+│   │   │   │   │   ├── profile/
+│   │   │   │   │   ├── trading/
+│   │   │   │   │   ├── transactions/
+│   │   │   │   │   └── watchlist/
+│   │   │   │   ├── utils/       # Utilities & helpers
+│   │   │   │   └── viewmodel/   # ViewModels
+│   │   │   ├── AndroidManifest.xml
+│   │   │   └── res/             # Resources
+│   │   └── build.gradle
+│   └── build.gradle
+├── backend/                     # Node.js Express API
+│   ├── config/                  # Database configuration
+│   ├── middleware/              # Authentication middleware
+│   ├── routes/                  # API routes
+│   └── server.js
+├── database/                    # MySQL schema & setup
+│   └── mysql_schema.sql
+├── MYSQL_SETUP.md              # MySQL setup instructions
+├── VSCODE_SETUP_GUIDE.md       # VS Code development setup
+└── README.md                    # This file
 ```
 
-## Features Overview
+## 🔒 Security Features
 
-### Dashboard
-- Account summary with balance and portfolio value
-- Market view with all available commodities
-- Quick buy/sell actions
-- Real-time price updates
-
-### Portfolio Management
-- View all holdings with current values
-- Profit/loss calculations (absolute and percentage)
-- Average purchase price tracking
-- Quick sell functionality
-
-### Order Management
-- Complete order history
-- Filter by buy/sell orders
-- Order status tracking
-- Detailed transaction information
-
-### Watchlist
-- Add favorite commodities
-- Quick access to tracked items
-- Real-time price updates
-- One-click trading
-
-### Admin Features
-- Platform-wide statistics
-- User management
-- Order monitoring
-- Trading volume analytics
-
-## Security Features
-
-- Password hashing with bcrypt
+- Password hashing with bcrypt (10 salt rounds)
 - JWT token-based authentication
-- Protected API routes
-- Admin role-based access control
+- Token storage in encrypted DataStore
+- Protected API routes with middleware
+- Automatic token injection via interceptors
 - SQL injection prevention with prepared statements
 - CORS configuration for API security
 
-## Future Enhancements
+## 📱 Running on Physical Device
 
-- Real-time price updates using WebSockets
-- Advanced charting with historical data
-- Limit orders and stop-loss functionality
-- Email notifications for price alerts
-- Two-factor authentication (2FA)
-- Mobile responsive design improvements
-- Trading analytics and reports
+1. **Enable Developer Mode:**
+   - Settings → About Phone
+   - Tap "Build Number" 7 times
 
-## License
+2. **Enable USB Debugging:**
+   - Settings → Developer Options
+   - Enable "USB Debugging"
+
+3. **Find Your Computer's IP:**
+   ```bash
+   # Linux/Mac
+   ifconfig | grep inet
+
+   # Windows
+   ipconfig
+   ```
+
+4. **Update API URL in build.gradle:**
+   ```gradle
+   buildConfigField "String", "API_BASE_URL", "\"http://192.168.1.XXX:5000/api/\""
+   ```
+
+5. **Connect & Run:**
+   ```bash
+   adb devices
+   ./gradlew installDebug
+   ```
+
+## 🐛 Troubleshooting
+
+### "Failed to connect to API"
+- Ensure backend is running on `http://localhost:5000`
+- Check API_BASE_URL in `build.gradle`
+- For emulator: Use `http://10.0.2.2:5000/api/`
+- For device: Use your computer's local IP
+
+### "Gradle sync failed"
+- File → Invalidate Caches → Invalidate and Restart
+- Delete `.gradle` folder and re-sync
+- Check internet connection for dependencies
+
+### "App crashes on launch"
+- Check Logcat in Android Studio
+- View → Tool Windows → Logcat
+- Filter by "Error" or "commodityx"
+
+## 📖 Documentation
+
+- **MYSQL_SETUP.md** - Complete MySQL database setup
+- **VSCODE_SETUP_GUIDE.md** - VS Code extensions and setup
+- **android-app/README.md** - Android app specific docs
+
+## 🎯 Default User Setup
+
+New users start with:
+- **Initial Balance**: $100,000
+- **Account Type**: Standard user
+- **Deposit Transaction**: Automatically recorded
+
+## 📄 License
 
 MIT License
 
-## Author
+## 👨‍💼 Author
 
 Built with ❤️ for commodities trading enthusiasts
+
+---
+
+## 🚀 Quick Start Guide
+
+1. **Start MySQL**: `mysql.server start`
+2. **Import Database**: `mysql -u root -p < database/mysql_schema.sql`
+3. **Start Backend**: `cd backend && npm start`
+4. **Open Android Studio**: Open `android-app/` directory
+5. **Run App**: Click the green Run button
+
+Happy Trading! 📈
