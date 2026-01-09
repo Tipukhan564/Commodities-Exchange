@@ -1,12 +1,12 @@
 # Commodities Exchange - Native Android App
 
-A comprehensive native Android commodities trading application with a futuristic cyberpunk UI, built with **Kotlin**, **Jetpack Compose**, **Node.js**, **Express**, and **MySQL**.
+A comprehensive native Android commodities trading application with a futuristic cyberpunk UI, built with **Kotlin**, **Jetpack Compose**, **Spring Boot**, and **MySQL**.
 
 ## 🚀 Features
 
 ### Authentication & Security
 - User registration and login with JWT authentication
-- Secure password hashing with bcrypt
+- Secure password hashing with BCrypt
 - Protected routes and automatic token refresh
 - Session management with encrypted local storage
 
@@ -61,10 +61,13 @@ A comprehensive native Android commodities trading application with a futuristic
 - **Navigation** - Bottom navigation + menu system
 
 ### Backend
-- **Node.js** with Express.js
-- **MySQL** database
-- **JWT** for authentication
-- **bcryptjs** for password hashing
+- **Spring Boot 3.2.1** - Enterprise Java framework
+- **Spring Data JPA** - ORM with Hibernate
+- **Spring Security** - Authentication & authorization
+- **MySQL** - Relational database
+- **JWT** - Token-based authentication
+- **BCrypt** - Password hashing
+- **Maven** - Build and dependency management
 - RESTful API architecture
 
 ### Design
@@ -78,31 +81,47 @@ A comprehensive native Android commodities trading application with a futuristic
 
 ### Prerequisites
 - **Android Studio** (Arctic Fox or newer)
-- **JDK 11+**
+- **JDK 17+**
 - **Android SDK 34**
-- **Node.js** (v14 or higher)
+- **Maven** (comes with Spring Boot wrapper)
 - **MySQL** (8.0 or higher)
 
-### 1. Backend Setup
+### 1. Database Setup
 
 ```bash
-# Navigate to backend directory
-cd backend
+# Start MySQL
+sudo systemctl start mysql
 
-# Install dependencies
-npm install
-
-# Set up MySQL database
-# See MYSQL_SETUP.md for detailed instructions
-mysql -u root -p < ../database/mysql_schema.sql
-
-# Start the backend server
-npm start
+# Import database schema
+mysql -u root -p commodities_exchange < database/mysql_schema.sql
 ```
 
-The backend server will run on `http://localhost:5000`
+See detailed instructions in:
+- `MYSQL_SETUP.md` - Complete MySQL setup guide
+- `MYSQL_PASSWORD_SETUP.md` - Password configuration
 
-### 2. Android App Setup
+### 2. Backend Setup (Spring Boot)
+
+```bash
+# Navigate to spring-backend directory
+cd spring-backend
+
+# Configure MySQL password (if needed)
+# Edit src/main/resources/application.properties
+# Change: spring.datasource.password=YOUR_MYSQL_PASSWORD
+
+# Run the application
+./mvnw spring-boot:run
+
+# Or if mvnw doesn't work
+mvn spring-boot:run
+```
+
+The backend server will run on `http://localhost:5000/api`
+
+**See complete setup guide:** `SPRING_BOOT_COMPLETE_GUIDE.md`
+
+### 3. Android App Setup
 
 #### Option A: Using Android Studio (Recommended)
 
@@ -126,7 +145,11 @@ The backend server will run on `http://localhost:5000`
    - Or press `Shift + F10`
    - Select emulator or connected device
 
-#### Option B: Using Command Line
+#### Option B: Using VS Code
+
+See `VSCODE_ANDROID_SETUP.md` for complete VS Code setup instructions.
+
+#### Option C: Using Command Line
 
 ```bash
 # Navigate to android app directory
@@ -140,21 +163,6 @@ cd android-app
 
 # Launch the app
 adb shell am start -n com.commodityx/.ui.MainActivity
-```
-
-### 3. Database Setup
-
-See detailed instructions in:
-- `MYSQL_SETUP.md` - Complete MySQL setup guide
-- `MYSQL_PASSWORD_SETUP.md` - Password configuration
-
-Quick setup:
-```bash
-# Import database schema
-mysql -u root -p commodities_exchange < database/mysql_schema.sql
-
-# Update backend config with your MySQL credentials
-# Edit backend/.env or backend/config/database.js
 ```
 
 ## 🎨 UI/UX Design
@@ -233,26 +241,36 @@ Commodities-Exchange/
 │   │   │   └── res/             # Resources
 │   │   └── build.gradle
 │   └── build.gradle
-├── backend/                     # Node.js Express API
-│   ├── config/                  # Database configuration
-│   ├── middleware/              # Authentication middleware
-│   ├── routes/                  # API routes
-│   └── server.js
+├── spring-backend/              # Spring Boot REST API
+│   ├── src/main/
+│   │   ├── java/com/commodityx/backend/
+│   │   │   ├── model/           # JPA Entities
+│   │   │   ├── repository/      # Spring Data repositories
+│   │   │   ├── dto/             # Data Transfer Objects
+│   │   │   ├── service/         # Business logic
+│   │   │   ├── controller/      # REST Controllers
+│   │   │   ├── security/        # JWT & Security config
+│   │   │   └── config/          # Application configuration
+│   │   └── resources/
+│   │       └── application.properties
+│   └── pom.xml
 ├── database/                    # MySQL schema & setup
 │   └── mysql_schema.sql
 ├── MYSQL_SETUP.md              # MySQL setup instructions
-├── VSCODE_SETUP_GUIDE.md       # VS Code development setup
+├── MYSQL_PASSWORD_SETUP.md     # MySQL password configuration
+├── SPRING_BOOT_COMPLETE_GUIDE.md  # Complete Spring Boot guide
+├── VSCODE_ANDROID_SETUP.md     # VS Code Android development
 └── README.md                    # This file
 ```
 
 ## 🔒 Security Features
 
-- Password hashing with bcrypt (10 salt rounds)
+- Password hashing with BCrypt (Spring Security)
 - JWT token-based authentication
 - Token storage in encrypted DataStore
-- Protected API routes with middleware
+- Protected API routes with Spring Security filters
 - Automatic token injection via interceptors
-- SQL injection prevention with prepared statements
+- SQL injection prevention with JPA/Hibernate
 - CORS configuration for API security
 
 ## 📱 Running on Physical Device
@@ -288,7 +306,7 @@ Commodities-Exchange/
 ## 🐛 Troubleshooting
 
 ### "Failed to connect to API"
-- Ensure backend is running on `http://localhost:5000`
+- Ensure Spring Boot is running on `http://localhost:5000`
 - Check API_BASE_URL in `build.gradle`
 - For emulator: Use `http://10.0.2.2:5000/api/`
 - For device: Use your computer's local IP
@@ -303,10 +321,20 @@ Commodities-Exchange/
 - View → Tool Windows → Logcat
 - Filter by "Error" or "commodityx"
 
+### Spring Boot Issues
+- **"Access denied for user 'root'@'localhost'"** - Update password in `application.properties`
+- **"Port 5000 already in use"** - Kill process: `kill -9 $(lsof -ti:5000)`
+- **"Could not find or load main class"** - Run: `./mvnw clean install`
+
+See `SPRING_BOOT_COMPLETE_GUIDE.md` for complete troubleshooting.
+
 ## 📖 Documentation
 
+- **SPRING_BOOT_COMPLETE_GUIDE.md** - Complete Spring Boot setup guide
 - **MYSQL_SETUP.md** - Complete MySQL database setup
-- **VSCODE_SETUP_GUIDE.md** - VS Code extensions and setup
+- **MYSQL_PASSWORD_SETUP.md** - MySQL password configuration
+- **VSCODE_ANDROID_SETUP.md** - VS Code Android development setup
+- **spring-backend/README.md** - Spring Boot backend quick start
 - **android-app/README.md** - Android app specific docs
 
 ## 🎯 Default User Setup
@@ -315,6 +343,16 @@ New users start with:
 - **Initial Balance**: $100,000
 - **Account Type**: Standard user
 - **Deposit Transaction**: Automatically recorded
+
+## ✅ Advantages of Spring Boot Backend
+
+1. **Type Safety** - Compile-time error checking
+2. **Better Performance** - JVM optimization
+3. **Enterprise Ready** - Production-grade features
+4. **Automatic MySQL Connection Pooling**
+5. **Built-in Security** - Spring Security with JWT
+6. **Easy Testing** - JUnit integration
+7. **Better Scalability** - Handle more concurrent users
 
 ## 📄 License
 
@@ -328,10 +366,10 @@ Built with ❤️ for commodities trading enthusiasts
 
 ## 🚀 Quick Start Guide
 
-1. **Start MySQL**: `mysql.server start`
-2. **Import Database**: `mysql -u root -p < database/mysql_schema.sql`
-3. **Start Backend**: `cd backend && npm start`
+1. **Start MySQL**: `sudo systemctl start mysql`
+2. **Verify Database**: `mysql -u root -p -e "SHOW DATABASES LIKE 'commodities_exchange';"`
+3. **Start Spring Boot**: `cd spring-backend && ./mvnw spring-boot:run`
 4. **Open Android Studio**: Open `android-app/` directory
-5. **Run App**: Click the green Run button
+5. **Run App**: Click the green Run button ▶️
 
 Happy Trading! 📈
