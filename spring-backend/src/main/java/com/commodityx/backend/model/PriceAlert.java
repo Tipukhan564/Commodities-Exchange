@@ -32,7 +32,8 @@ public class PriceAlert {
     private BigDecimal targetPrice;
 
     @Column(nullable = false, length = 10)
-    private String condition; // "above" or "below"
+    @Enumerated(EnumType.STRING)
+    private AlertCondition condition;
 
     @Column(name = "is_active")
     private Boolean isActive = true;

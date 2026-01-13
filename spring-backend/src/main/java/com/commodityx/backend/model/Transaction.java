@@ -24,9 +24,8 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "transaction_type", nullable = false, length = 20)
-    @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
+    @Column(name = "type", nullable = false, length = 20)
+    private String type;
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
@@ -37,8 +36,4 @@ public class Transaction {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
-    public enum TransactionType {
-        DEPOSIT, WITHDRAWAL, BUY, SELL
-    }
 }
